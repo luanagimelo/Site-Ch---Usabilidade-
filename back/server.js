@@ -52,16 +52,22 @@ server.post("/cadastrados/login", async (req, res) => {
 })
 
 server.post("/cadastrados", async (req, res) => {
-  const cliente = new Cliente(req.body);
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  await Cliente.create(cliente).then(() => {
-    console.log("document inserted");    
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+  if (regex.test(req.body.email)) {
+    const cliente = new Cliente(req.body);
 
-  return res.status(201).json(cliente);
+    await Cliente.create(cliente).then(() => {
+      console.log("document inserted");    
+    })
+    .catch((err) => {
+      console.log(err);
+    }); 
+
+    return res.status(201).json(cliente);
+  } else {
+    return res.status(403).json({message: "email inválido"})
+  }
 });
 
 server.put("/cadastrados/:email", async (req, res) => {
