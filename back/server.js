@@ -67,6 +67,9 @@ server.post("/cadastrados", async (req, res) => {
 server.put("/cadastrados/:email", async (req, res) => {
   const email = req.params.email;
 
+  if(req.body.email != null){
+    return res.status(403).json({mensagem: "Email não pode ser atualizado"})
+  }
   await Cliente.findOneAndUpdate({ email: email }, req.body)
   .catch((err) => {
     console.log(err);
