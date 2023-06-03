@@ -23,12 +23,17 @@ mongoose
 });
 
 server.get("/cadastrados", async (req, res, next) => {
-  const cliente = await Cliente.find({})
-  .catch((err) => {
-    console.log(err);
+  const clientes = await Cliente.find({}).select("-pwd") // Exclui o campo "pwd" da seleção
+    .catch((err) => {
+      console.log(err);
+    });
+
+  // Mapeia os clientes para substituir o campo "pwd" por "***"
+  const clientesSemSenha = clientes.map((cliente) => {
+    return { ...cliente.toObject(), pwd: "*********" };
   });
 
-  return res.status(200).json(cliente);
+  return res.status(200).json(clientesSemSenha);
 });
 
 server.get("/cadastrados/:email", async (req, res, next) => {
@@ -55,7 +60,7 @@ server.post("/cadastrados", async (req, res) => {
   var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const login = await Cliente.findOne(req.body);
   if(login != null){
-    return res.status(422).json({message: "usuário ja existe"}) 
+    return res.status(422).json({message: "usuário"}) 
   }
 
   if (regex.test(req.body.email)) {
