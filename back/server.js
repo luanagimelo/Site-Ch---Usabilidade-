@@ -48,7 +48,7 @@ server.post("/cadastrados/login", async (req, res) => {
   if(login == null){
     return res.status(401).send(false);
   }
-  return res.status(200).send(true);
+  return res.status(200).send(login);
 })
 
 server.post("/cadastrados", async (req, res) => {
