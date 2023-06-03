@@ -76,11 +76,14 @@ server.put("/cadastrados/:email", async (req, res) => {
   if(req.body.email != null){
     return res.status(403).json({mensagem: "Email não pode ser atualizado"})
   }
-  await Cliente.findOneAndUpdate({ email: email }, req.body)
+  const cliente = await Cliente.findOne( {email: req.params.email} )
   .catch((err) => {
     console.log(err);
   });
-
+  if(cliente == null){
+    return res.status(404).json({message : "Cliente não encontrado"})
+  }
+  cliente.updateOne(req.body);
   return res.status(201).json({ message: "Dados atualizados" });
 });
 
