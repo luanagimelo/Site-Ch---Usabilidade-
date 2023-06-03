@@ -81,10 +81,16 @@ server.put("/cadastrados/:email", async (req, res) => {
 server.delete("/cadastrados/:email", async (req, res) => {
   const email = req.params.email;
 
-  await Cliente.findOneAndRemove({ email: email })
+  const cliente = await Cliente.findOne({ email: email })
   .catch((err) => {
-    console.log(err);
+    console.log(err); 
   });
+
+  if(cliente == null){
+    return res.status(404).json({message:"Cliente não encontrado"});
+  }else{
+    cliente.deleteOne();
+  }
 
   return res.status(200).json({ message: "Cliente deletado" });
 });
