@@ -53,6 +53,10 @@ server.post("/cadastrados/login", async (req, res) => {
 
 server.post("/cadastrados", async (req, res) => {
   var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const login = await Cliente.findOne(req.body);
+  if(login != null){
+    return res.status(422).json({message: "usuário ja existe"}) 
+  }
 
   if (regex.test(req.body.email)) {
     const cliente = new Cliente(req.body);
